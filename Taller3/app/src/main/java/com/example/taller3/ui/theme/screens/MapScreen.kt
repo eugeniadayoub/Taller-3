@@ -67,8 +67,11 @@ fun MapScreen(navController: NavController) {
                         .setValue(mapOf("lat" to location.latitude, "lng" to location.longitude))
                 }
                 coroutineScope.launch {
-                    cameraPositionState.move(CameraUpdateFactory.newLatLngZoom(newLoc, 17f))
+                    val currentZoom = cameraPositionState.position.zoom
+                    val newZoom = currentZoom // asignamos el zoom actual
+                    cameraPositionState.move(CameraUpdateFactory.newLatLngZoom(newLoc, newZoom))
                 }
+
             }
         } else {
             uid?.let { database.child("enLinea").setValue(false) }
@@ -138,14 +141,15 @@ fun MapScreen(navController: NavController) {
             override fun onCancelled(error: DatabaseError) {}
         })
     }
-
+    Spacer(modifier = Modifier.width(24.dp))
     Column(modifier = Modifier.fillMaxSize()) {
         Row(
             modifier = Modifier.fillMaxWidth().padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
+
             Text("Ubicación en tiempo real")
-            Spacer(modifier = Modifier.width(8.dp))
+            Spacer(modifier = Modifier.width(24.dp))
             Switch(
                 checked = isTracking,
                 onCheckedChange = {
